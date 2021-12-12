@@ -44,9 +44,13 @@
  * The switchercb is pointed to by c29 (caller) and, later on, c8 (callee).
  */
 
-.text
-.globl _C_LABEL(switcher_cocall)
-_C_LABEL(switcher_cocall):
+#define	SIGCODE(sym)						\
+	.text; .globl sym; .type sym,@object; .align 4; sym: .cfi_startproc
+
+#define CSYM(x)							\
+	.globl x; .type x,@object; x:
+
+SIGCODE(switcher_cocall)
 	/*
 	 * Save the caller's CPU context in the caller's control block.
 	 *
@@ -179,11 +183,13 @@ _C_LABEL(switcher_cocall):
 	bge	3f
 	mov	x13, x4
 
+CSYM(switcher_cocall_copy_start)
 3:
 	add	x13, x13, #-8
 	ldr	x11, [c3, x13]
 	str	x11, [c12, x13]
 	cbnz	x13, 3b
+CSYM(switcher_cocall_copy_end)
 
 	/*
 	 * We're returning success; clear the carry flag.
@@ -236,6 +242,7 @@ _C_LABEL(switcher_cocall):
 	subs	x0, x0, #0
 	b	4b
 
+CSYM(switcher_cocall_copy_onfault)
 	/* Assumes x0 holds errno and that 'c29' points to caller's scb. */
 
 	/* Clear state in the callee's scb. */
@@ -259,10 +266,13 @@ _C_LABEL(switcher_cocall):
 
 	b	4b
 
-.globl _C_LABEL(eswitcher_cocall)
-_C_LABEL(eswitcher_cocall):
+END(switcher_cocall)
+eswitcher_cocall:
 
-.data
-.globl szswitcher_cocall
+	.data
+	.align	3
+	.globl szswitcher_cocall
+	.type szswitcher_cocall,@object
 szswitcher_cocall:
-.long eswitcher_cocall-switcher_cocall
+	.long eswitcher_cocall - switcher_cocall
+	.size szswitcher_cocall, . - szswitcher_cocall
