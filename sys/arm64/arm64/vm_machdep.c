@@ -111,6 +111,7 @@ cpu_fork(struct thread *td1, struct proc *p2, struct thread *td2, int flags)
 
 #if __has_feature(capabilities)
 	p2->p_md.md_sigcode = td1->td_proc->p_md.md_sigcode;
+        colocation_cleanup(td2);
 #endif
 
 	tf = (struct trapframe *)STACKALIGN((struct trapframe *)pcb2 - 1);
@@ -284,6 +285,9 @@ cpu_thread_alloc(struct thread *td)
 	    td->td_kstack_pages * PAGE_SIZE) - 1;
 	td->td_frame = (struct trapframe *)STACKALIGN(
 	    (struct trapframe *)td->td_pcb - 1);
+#if __has_feature(capabilities)
+        colocation_cleanup(td);
+#endif
 }
 
 void
