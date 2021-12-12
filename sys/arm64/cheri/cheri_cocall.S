@@ -72,9 +72,9 @@ SIGCODE(switcher_cocall)
 	str	c28, SCB_C28(c29)
 
 	/*
-	 * Save RCTPIDR_EL0, the TLS pointer.
+	 * Save CTPIDR_EL0, the TLS pointer.
 	 */
-	mrs	c8, RCTPIDR_EL0
+	mrs	c8, CTPIDR_EL0
 	str	c8, SCB_TLS(c29)
 
 	/*
@@ -164,10 +164,10 @@ SIGCODE(switcher_cocall)
 	ldr	c28, SCB_C28(c8)
 
 	/*
-	 * Restore RCTPIDR_EL0, the TLS pointer.
+	 * Restore CTPIDR_EL0, the TLS pointer.
 	 */
 	ldr	c10, SCB_TLS(c8)
-	msr	RCTPIDR_EL0, c10
+	msr	CTPIDR_EL0, c10
 
 	/*
 	 * Do the data transfer.
