@@ -63,6 +63,15 @@ _C_LABEL(switcher_coaccept):
 	str	c8, SCB_CSP(c29)
 	str	c30, SCB_CRA(c29)
 
+	str	q8, SCB_Q8(c29)
+	str	q9, SCB_Q9(c29)
+	str	q10, SCB_Q10(c29)
+	str	q11, SCB_Q11(c29)
+	str	q12, SCB_Q12(c29)
+	str	q13, SCB_Q13(c29)
+	str	q14, SCB_Q14(c29)
+	str	q15, SCB_Q15(c29)
+
 	str	c19, SCB_C19(c29)
 	str	c20, SCB_C20(c29)
 	str	c21, SCB_C21(c29)
@@ -140,6 +149,28 @@ _C_LABEL(switcher_coaccept):
 	ldr	c10, SCB_CSP(c8)
 	mov	csp, c10
 	ldr	c30, SCB_CRA(c8)
+
+#ifdef can_build_now
+	ldr	q8, SCB_Q9(c8)
+	ldr	q9, SCB_Q9(c8)
+	ldr	q10, SCB_Q10(c8)
+	ldr	q11, SCB_Q11(c8)
+	ldr	q12, SCB_Q12(c8)
+	ldr	q13, SCB_Q13(c8)
+	ldr	q14, SCB_Q14(c8)
+	ldr	q15, SCB_Q15(c8)
+#else
+	add	c9, c8, #3*CHERICAP_SIZE
+	# XXX: Won't compile if the immediate is #0, that's why we need the line above
+	ldr	q8, [c9, #1*CHERICAP_SIZE]
+	ldr	q9, [c9, #2*CHERICAP_SIZE]
+	ldr	q10, [c9, #3*CHERICAP_SIZE]
+	ldr	q11, [c9, #4*CHERICAP_SIZE]
+	ldr	q12, [c9, #5*CHERICAP_SIZE]
+	ldr	q13, [c9, #6*CHERICAP_SIZE]
+	ldr	q14, [c9, #7*CHERICAP_SIZE]
+	ldr	q15, [c9, #8*CHERICAP_SIZE]
+#endif
 
 	ldr	c19, SCB_C19(c8)
 	ldr	c20, SCB_C20(c8)

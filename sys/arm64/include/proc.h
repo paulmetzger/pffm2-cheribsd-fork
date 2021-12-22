@@ -74,6 +74,20 @@ struct switchercb {
 	void * __capability			scb_unsealcap;
 
 	/*
+	 * Floating point.  The reason for this being here and not
+	 * below is that the immediate offset range for ldr/str
+	 * instructions is smaller when used with vector registers.
+	 */
+	__uint128_t				scb_q8;
+	__uint128_t				scb_q9;
+	__uint128_t				scb_q10;
+	__uint128_t				scb_q11;
+	__uint128_t				scb_q12;
+	__uint128_t				scb_q13;
+	__uint128_t				scb_q14;
+	__uint128_t				scb_q15;
+
+	/*
 	 * XXX
 	 */
 	void * __capability			scb_csp;
@@ -126,6 +140,7 @@ struct switchercb {
 	 * RCTPIDR_EL0
 	 */
 	void * __capability			scb_tls;
+
 };
 #endif
 
