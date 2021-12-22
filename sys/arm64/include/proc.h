@@ -141,6 +141,9 @@ struct switchercb {
 	 */
 	void * __capability			scb_tls;
 
+	void * __capability			scb_fpcr;
+	void * __capability			scb_fpsr;
+
 };
 #endif
 

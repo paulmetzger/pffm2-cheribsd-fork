@@ -64,5 +64,7 @@
 #define	SCB_C27(X)		[X, #27*CHERICAP_SIZE]
 #define	SCB_C28(X)		[X, #28*CHERICAP_SIZE]
 #define	SCB_TLS(X)		[X, #29*CHERICAP_SIZE]
+#define	SCB_FPCR(X)		[X, #30*CHERICAP_SIZE]
+#define	SCB_FPSR(X)		[X, #31*CHERICAP_SIZE]
 
 #endif /* !_MACHINE_SWITCHER_H_ */

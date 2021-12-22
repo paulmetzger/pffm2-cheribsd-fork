@@ -68,6 +68,10 @@ SIGCODE(switcher_cocall)
 	str	q13, SCB_Q13(c29)
 	str	q14, SCB_Q14(c29)
 	str	q15, SCB_Q15(c29)
+	mrs	x8, FPCR
+	str	x8, SCB_FPCR(c29)
+	mrs	x8, FPSR
+	str	x8, SCB_FPSR(c29)
 
 	str	c19, SCB_C19(c29)
 	str	c20, SCB_C20(c29)
@@ -182,6 +186,10 @@ SIGCODE(switcher_cocall)
 	ldr	q14, [c9, #7*CHERICAP_SIZE]
 	ldr	q15, [c9, #8*CHERICAP_SIZE]
 #endif
+	ldr	x10, SCB_FPCR(c8);
+	msr	FPCR, x10
+	ldr	x10, SCB_FPSR(c8);
+	msr	FPSR, x10
 
 	ldr	c19, SCB_C19(c8)
 	ldr	c20, SCB_C20(c8)
