@@ -330,6 +330,9 @@ colocation_unborrow(struct thread *td)
 #ifdef __mips__
 	trapf_pc_t peertpc;
 #endif
+#ifdef __aarch64__
+	uintcap_t peertpidr;
+#endif
 	bool have_scb;
 
 	have_scb = colocation_fetch_scb(td, &scb);
@@ -409,6 +412,13 @@ colocation_unborrow(struct thread *td)
 	peertd->td_pcb->pcb_tpc = td->td_pcb->pcb_tpc;
 	td->td_pcb->pcb_tpc = peertpc;
 #endif
+
+	/*
+	 * On aarch64, the TLS pointer is in TPC, not in td_frame.
+	 */
+	peertpidr = peertd->td_pcb->pcb_tpidr_el0;
+	peertd->td_pcb->pcb_tpidr_el0 = td->td_pcb->pcb_tpidr_el0;
+	td->td_pcb->pcb_tpidr_el0 = peertpidr;
 
 	memcpy(&peertrapframe, peertd->td_frame, sizeof(struct trapframe));
 	memcpy(peertd->td_frame, td->td_frame, sizeof(struct trapframe));
