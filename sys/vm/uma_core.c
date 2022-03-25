@@ -3515,7 +3515,9 @@ uma_zalloc_smr(uma_zone_t zone, int flags)
 		return (item);
 #endif
 #ifdef CHERI_UMA_EXTRA_STATS
-	counter_u64_add(zone->uz_pressure, 1);
+	if ((flags & M_NOVM) == 0) {
+		counter_u64_add(zone->uz_pressure, 1);
+	}
 #endif
 
 	critical_enter();
@@ -3540,7 +3542,9 @@ uma_zalloc_arg(uma_zone_t zone, void *udata, int flags)
 	CTR3(KTR_UMA, "uma_zalloc_arg zone %s(%p) flags %d", zone->uz_name,
 	    zone, flags);
 #ifdef CHERI_UMA_EXTRA_STATS
-	counter_u64_add(zone->uz_pressure, 1);
+	if ((flags & M_NOVM) == 0) {
+		counter_u64_add(zone->uz_pressure, 1);
+	}
 #endif
 
 #ifdef UMA_ZALLOC_DEBUG
@@ -4277,9 +4281,6 @@ uma_zfree_smr(uma_zone_t zone, void *item)
 	if (uma_zfree_debug(zone, item, NULL) == EJUSTRETURN)
 		return;
 #endif
-#ifdef CHERI_UMA_EXTRA_STATS
-	counter_u64_add(zone->uz_pressure, 1);
-#endif
 	cache = &zone->uz_cpu[curcpu];
 	uz_flags = cache_uz_flags(cache);
 	itemdomain = 0;
@@ -4333,9 +4334,6 @@ uma_zfree_arg(uma_zone_t zone, void *item, void *udata)
 	random_harvest_fast_uma(&zone, sizeof(zone), RANDOM_UMA);
 
 	CTR2(KTR_UMA, "uma_zfree_arg zone %s(%p)", zone->uz_name, zone);
-#ifdef CHERI_UMA_EXTRA_STATS
-	counter_u64_add(zone->uz_pressure, 1);
-#endif
 
 #ifdef UMA_ZALLOC_DEBUG
 	KASSERT((zone->uz_flags & UMA_ZONE_SMR) == 0,
