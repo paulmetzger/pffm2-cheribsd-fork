@@ -1002,7 +1002,8 @@ enum MipsCheriFlags {
 #define	AT_ENVV		31	/* Environment vector */
 #define	AT_PS_STRINGS	32	/* struct ps_strings */
 #define	AT_FXRNG	33	/* Pointer to root RNG seed version. */
-#define	AT_CAPV		34	/* Capability vector passed to coexecvec(2) */
+#define	AT_CAPC		34	/* Number of entries in capability vector */
+#define	AT_CAPV		35	/* Capability vector passed to coexecvec(2) */
 
 #define	AT_COUNT	35	/* Count of defined aux entry types. */
 

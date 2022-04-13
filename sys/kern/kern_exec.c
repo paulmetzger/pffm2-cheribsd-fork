@@ -235,7 +235,7 @@ sys_coexecve(struct thread *td, struct coexecve_args *uap)
 		return (error);
 	}
 	error = exec_copyin_args(&args, uap->fname,
-	    UIO_USERSPACE, uap->argv, uap->envv, NULL);
+	    UIO_USERSPACE, uap->argv, uap->envv, NULL, 0);
 	if (error == 0)
 		error = kern_coexecve(td, &args, NULL, oldvmspace, p, false);
 	post_execve(td, error, oldvmspace);
@@ -270,7 +270,7 @@ sys_coexecvec(struct thread *td, struct coexecvec_args *uap)
 		return (error);
 	}
 	error = exec_copyin_args(&args, uap->fname,
-	    UIO_USERSPACE, uap->argv, uap->envv, uap->capv);
+	    UIO_USERSPACE, uap->argv, uap->envv, uap->capv, uap->capc);
 	if (error == 0)
 		error = kern_coexecve(td, &args, NULL, oldvmspace, p, false);
 	post_execve(td, error, oldvmspace);
@@ -298,7 +298,7 @@ sys_execve(struct thread *td, struct execve_args *uap)
 	if (error != 0)
 		return (error);
 	error = exec_copyin_args(&args, uap->fname, UIO_USERSPACE,
-	    uap->argv, uap->envv, NULL);
+	    uap->argv, uap->envv, NULL, 0);
 	if (error == 0)
 		error = kern_execve(td, &args, NULL, oldvmspace);
 	post_execve(td, error, oldvmspace);
@@ -324,7 +324,7 @@ sys_fexecve(struct thread *td, struct fexecve_args *uap)
 	if (error != 0)
 		return (error);
 	error = exec_copyin_args(&args, NULL, UIO_SYSSPACE,
-	    uap->argv, uap->envv, NULL);
+	    uap->argv, uap->envv, NULL, 0);
 	if (error == 0) {
 		args.fd = uap->fd;
 		error = kern_execve(td, &args, NULL, oldvmspace);
@@ -355,7 +355,7 @@ sys___mac_execve(struct thread *td, struct __mac_execve_args *uap)
 	if (error != 0)
 		return (error);
 	error = exec_copyin_args(&args, uap->fname, UIO_USERSPACE,
-	    uap->argv, uap->envv, NULL);
+	    uap->argv, uap->envv, NULL, 0);
 	if (error == 0)
 		error = kern_execve(td, &args, uap->mac_p, oldvmspace);
 	post_execve(td, error, oldvmspace);
@@ -1493,27 +1493,6 @@ get_argenv_ptr(void * __capability *arrayp, void * __capability *ptrp)
 	return (0);
 }
 
-static int
-get_argcap_ptr(void * __capability *arrayp, void * __capability *ptrp)
-{
-	uintcap_t ptr;
-	char * __capability array;
-
-	array = *arrayp;
-
-	KASSERT(SV_CURPROC_FLAG(SV_LP64 | SV_CHERI) == (SV_LP64 | SV_CHERI),
-	    ("%s: not cheri?", __func__));
-
-	if (fuecap(array, &ptr) == -1)
-		return (EFAULT);
-	array += sizeof(ptr);
-	*ptrp = (void * __capability)ptr;
-
-	*arrayp = array;
-
-	return (0);
-}
-
 /*
  * Copy out argument and environment strings from the old process address
  * space into the temporary string buffer.
@@ -1521,7 +1500,7 @@ get_argcap_ptr(void * __capability *arrayp, void * __capability *ptrp)
 int
 exec_copyin_args(struct image_args *args, const char * __capability fname,
     enum uio_seg segflg, void * __capability argv, void * __capability envv,
-    void * __capability capv)
+    void * __capability capv, int capc)
 {
 	void * __capability ptr;
 	int error;
@@ -1579,16 +1558,9 @@ exec_copyin_args(struct image_args *args, const char * __capability fname,
 	 * extract capability vector
 	 */
 	if (capv) {
-		for (;;) {
-			error = get_argcap_ptr(&capv, &ptr);
-			if (error != 0)
-				goto err_exit;
-			error = exec_args_add_cap(args, ptr);
-			if (error != 0)
-				goto err_exit;
-			if (ptr == NULL)
-				break;
-		}
+		error = exec_args_add_capv(args, capv, capc);
+		if (error != 0)
+			goto err_exit;
 	}
 
 	return (0);
@@ -1800,6 +1772,10 @@ exec_free_args(struct image_args *args)
 	}
 	if (args->fdp != NULL)
 		fdescfree_remapped(args->fdp);
+	if (args->capv != NULL) {
+		free(args->capv, M_TEMP);
+		args->capv = NULL;
+	}
 }
 
 /*
@@ -1898,15 +1874,29 @@ exec_args_add_env(struct image_args *args, const char * __capability envp,
 }
 
 int
-exec_args_add_cap(struct image_args *args, void * __capability cap)
+exec_args_add_capv(struct image_args *args, void * __capability capv, int capc)
 {
+	size_t capvlen;
+	int error;
 
-	if (args->capc >= nitems(args->capv))
+	KASSERT(args->capv == NULL, ("capv %p not NULL", args->capv));
+	KASSERT(args->capc == 0, ("capc %d not 0", args->capc));
+
+	if (capc < 0)
+		return (EINVAL);
+
+	if (capc == 0)
+		return (0);
+
+	if (capc >= 42 /* XXX */)
 		return (E2BIG);
 
-	args->capv[args->capc++] = cap;
+	capvlen = capc * sizeof(void * __capability);
+	args->capv = malloc(capvlen, M_TEMP, M_WAITOK);
+	error = copyincap(capv, args->capv, capvlen);
+	args->capc = capc;
 
-	return (0);
+	return (error);
 }
 
 int

@@ -827,7 +827,8 @@ systrace_args(int sysnum, void *params, uint64_t *uarg, int *n_args)
 		uarg[2] = (intptr_t) p->argv; /* char * __capability * __capability */
 		uarg[3] = (intptr_t) p->envv; /* char * __capability * __capability */
 		uarg[4] = (intptr_t) p->capv; /* char * __capability __capability * __capability */
-		*n_args = 5;
+		iarg[5] = p->capc; /* int */
+		*n_args = 6;
 		break;
 	}
 	/* nlm_syscall */
@@ -4824,6 +4825,9 @@ systrace_entry_setargdesc(int sysnum, int ndx, char *desc, size_t descsz)
 			break;
 		case 4:
 			p = "userland char * __capability __capability * __capability";
+			break;
+		case 5:
+			p = "int";
 			break;
 		default:
 			break;
