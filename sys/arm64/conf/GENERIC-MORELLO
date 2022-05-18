@@ -42,6 +42,7 @@ device		komeda_drm
 device		panfrost
 device		tda19988
 device		cdns_i2c
+device		ums
 
 # FDT support needed for DRM
 options		FDT
