@@ -32,7 +32,7 @@
 #include <linux/scatterlist.h>
 
 struct drm_gem_cma_object {
-	struct drm_gem_object	gem_obj;
+	struct drm_gem_object	gem_obj __subobject_use_container_bounds;
 	struct sg_table         *sgt;
 
 	/* mapped memory buffer */
