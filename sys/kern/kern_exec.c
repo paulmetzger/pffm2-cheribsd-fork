@@ -839,6 +839,20 @@ interpret:
 		sys_cap_enter(td, NULL);
 
 	/*
+	 * Inherit the capability vector, unless we got explicitly
+	 * passed a new one, or the inherited one came from a different
+	 * vmspace.
+	 */
+	if (imgp->args->capc <= 0 && p->p_capc > 0 &&
+	    p->p_capv_vmspace == p->p_vmspace) {
+		imgp->args->capc = p->p_capc;
+		imgp->args->capv = p->p_capv;
+		p->p_capc = 0;
+		p->p_capv = NULL;
+		p->p_capv_vmspace = NULL;
+	}
+
+	/*
 	 * Copy out strings (args and env) and initialize stack base.
 	 */
 	error = (*p->p_sysent->sv_copyout_strings)(imgp, &stack_base);
@@ -1114,6 +1128,18 @@ exec_fail:
 		sigacts_free(oldsigacts);
 	if (euip != NULL)
 		uifree(euip);
+
+	/*
+	 * Save capv, so it can get implicitly passed on to descendants.
+	 */
+	if (error == 0 && imgp->args->capc > 0) {
+		free(p->p_capv, M_CAPV);
+		p->p_capc = imgp->args->capc;
+		p->p_capv = imgp->args->capv;
+		p->p_capv_vmspace = p->p_vmspace;
+		imgp->args->capc = 0;
+		imgp->args->capv = NULL;
+	}
 
 	if (error && imgp->vmspace_destroyed) {
 		if (opportunistic) {
@@ -1779,7 +1805,8 @@ exec_free_args(struct image_args *args)
 	if (args->fdp != NULL)
 		fdescfree_remapped(args->fdp);
 	if (args->capv != NULL) {
-		free(args->capv, M_TEMP);
+		free(args->capv, M_CAPV);
+		args->capc = 0;
 		args->capv = NULL;
 	}
 }
@@ -1898,7 +1925,7 @@ exec_args_add_capv(struct image_args *args, void * __capability capv, int capc)
 		return (E2BIG);
 
 	capvlen = capc * sizeof(void * __capability);
-	args->capv = malloc(capvlen, M_TEMP, M_WAITOK);
+	args->capv = malloc(capvlen, M_CAPV, M_WAITOK);
 	error = copyincap(capv, args->capv, capvlen);
 	args->capc = capc;
 
