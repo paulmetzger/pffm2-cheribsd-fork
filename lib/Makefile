@@ -273,6 +273,7 @@ SUBDIR:=	${SUBDIR:Nlibc++experimental}
 .endif
 
 .if ${MACHINE_ABI:Mpurecap}
+SUBDIR+=	libclocks
 SUBDIR+=	libmalloc_simple
 .endif
 
