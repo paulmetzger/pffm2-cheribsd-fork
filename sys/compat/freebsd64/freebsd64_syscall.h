@@ -153,6 +153,8 @@
 #define	FREEBSD64_SYS_freebsd64_quotactl	148
 				/* 149 is obsolete oquota */
 				/* 150 is obsolete ogetsockname */
+#define	FREEBSD64_SYS_freebsd64_coexecve	151
+#define	FREEBSD64_SYS_freebsd64_coexecvec	152
 #define	FREEBSD64_SYS_freebsd64_nlm_syscall	154
 #define	FREEBSD64_SYS_freebsd64_nfssvc	155
 				/* 156 is obsolete ogetdirentries */
@@ -172,6 +174,10 @@
 				/* 174 is freebsd6 freebsd64_pwrite */
 #define	FREEBSD64_SYS_setfib	175
 #define	FREEBSD64_SYS_freebsd64_ntp_adjtime	176
+#define	FREEBSD64_SYS_freebsd64__cosetup	177
+#define	FREEBSD64_SYS_freebsd64_coregister	178
+#define	FREEBSD64_SYS_freebsd64_colookup	179
+#define	FREEBSD64_SYS_copark	180
 #define	FREEBSD64_SYS_setgid	181
 #define	FREEBSD64_SYS_setegid	182
 #define	FREEBSD64_SYS_seteuid	183
@@ -184,6 +190,7 @@
 #define	FREEBSD64_SYS_freebsd11_freebsd64_lstat	190
 #define	FREEBSD64_SYS_freebsd64_pathconf	191
 #define	FREEBSD64_SYS_fpathconf	192
+#define	FREEBSD64_SYS_freebsd64_cogetpid	193
 #define	FREEBSD64_SYS_freebsd64_getrlimit	194
 #define	FREEBSD64_SYS_freebsd64_setrlimit	195
 #define	FREEBSD64_SYS_freebsd11_freebsd64_getdirentries	196
@@ -485,8 +492,8 @@
 #define	FREEBSD64_SYS_freebsd64_ppoll	545
 #define	FREEBSD64_SYS_freebsd64_futimens	546
 #define	FREEBSD64_SYS_freebsd64_utimensat	547
-				/* 548 is obsolete numa_getaffinity */
-				/* 549 is obsolete numa_setaffinity */
+#define	FREEBSD64_SYS_freebsd64_cocall_slow	548
+#define	FREEBSD64_SYS_freebsd64_coaccept_slow	549
 #define	FREEBSD64_SYS_fdatasync	550
 #define	FREEBSD64_SYS_freebsd64_fstat	551
 #define	FREEBSD64_SYS_freebsd64_fstatat	552

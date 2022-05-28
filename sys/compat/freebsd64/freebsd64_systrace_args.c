@@ -809,6 +809,28 @@ systrace_args(int sysnum, void *params, uint64_t *uarg, int *n_args)
 		*n_args = 4;
 		break;
 	}
+	/* freebsd64_coexecve */
+	case 151: {
+		struct freebsd64_coexecve_args *p = params;
+		iarg[0] = p->pid; /* pid_t */
+		uarg[1] = (intptr_t) p->fname; /* const char * */
+		uarg[2] = (intptr_t) p->argv; /* char ** */
+		uarg[3] = (intptr_t) p->envv; /* char ** */
+		*n_args = 4;
+		break;
+	}
+	/* freebsd64_coexecvec */
+	case 152: {
+		struct freebsd64_coexecvec_args *p = params;
+		iarg[0] = p->pid; /* pid_t */
+		uarg[1] = (intptr_t) p->fname; /* const char * */
+		uarg[2] = (intptr_t) p->argv; /* char ** */
+		uarg[3] = (intptr_t) p->envv; /* char ** */
+		uarg[4] = (intptr_t) p->capv; /* char * __capability * */
+		iarg[5] = p->capc; /* int */
+		*n_args = 6;
+		break;
+	}
 	/* freebsd64_nlm_syscall */
 	case 154: {
 		struct freebsd64_nlm_syscall_args *p = params;
@@ -907,6 +929,36 @@ systrace_args(int sysnum, void *params, uint64_t *uarg, int *n_args)
 		*n_args = 1;
 		break;
 	}
+	/* freebsd64__cosetup */
+	case 177: {
+		struct freebsd64__cosetup_args *p = params;
+		iarg[0] = p->what; /* int */
+		uarg[1] = (intptr_t) p->code; /* void * __capability * */
+		uarg[2] = (intptr_t) p->data; /* void * __capability * */
+		*n_args = 3;
+		break;
+	}
+	/* freebsd64_coregister */
+	case 178: {
+		struct freebsd64_coregister_args *p = params;
+		uarg[0] = (intptr_t) p->name; /* const char * */
+		uarg[1] = (intptr_t) p->cap; /* void * __capability * */
+		*n_args = 2;
+		break;
+	}
+	/* freebsd64_colookup */
+	case 179: {
+		struct freebsd64_colookup_args *p = params;
+		uarg[0] = (intptr_t) p->name; /* const char * */
+		uarg[1] = (intptr_t) p->cap; /* void * __capability * */
+		*n_args = 2;
+		break;
+	}
+	/* copark */
+	case 180: {
+		*n_args = 0;
+		break;
+	}
 	/* setgid */
 	case 181: {
 		struct setgid_args *p = params;
@@ -942,6 +994,13 @@ systrace_args(int sysnum, void *params, uint64_t *uarg, int *n_args)
 		iarg[0] = p->fd; /* int */
 		iarg[1] = p->name; /* int */
 		*n_args = 2;
+		break;
+	}
+	/* freebsd64_cogetpid */
+	case 193: {
+		struct freebsd64_cogetpid_args *p = params;
+		uarg[0] = (intptr_t) p->pidp; /* pid_t * */
+		*n_args = 1;
 		break;
 	}
 	/* freebsd64_getrlimit */
@@ -3137,6 +3196,28 @@ systrace_args(int sysnum, void *params, uint64_t *uarg, int *n_args)
 		*n_args = 4;
 		break;
 	}
+	/* freebsd64_cocall_slow */
+	case 548: {
+		struct freebsd64_cocall_slow_args *p = params;
+		uarg[0] = (intptr_t) p->target; /* void * __capability */
+		uarg[1] = (intptr_t) p->outbuf; /* const void * __capability */
+		uarg[2] = p->outlen; /* size_t */
+		uarg[3] = (intptr_t) p->inbuf; /* void * __capability */
+		uarg[4] = p->inlen; /* size_t */
+		*n_args = 5;
+		break;
+	}
+	/* freebsd64_coaccept_slow */
+	case 549: {
+		struct freebsd64_coaccept_slow_args *p = params;
+		uarg[0] = (intptr_t) p->cookiep; /* void * __capability * */
+		uarg[1] = (intptr_t) p->outbuf; /* const void * __capability */
+		uarg[2] = p->outlen; /* size_t */
+		uarg[3] = (intptr_t) p->inbuf; /* void * __capability */
+		uarg[4] = p->inlen; /* size_t */
+		*n_args = 5;
+		break;
+	}
 	/* fdatasync */
 	case 550: {
 		struct fdatasync_args *p = params;
@@ -4708,6 +4789,50 @@ systrace_entry_setargdesc(int sysnum, int ndx, char *desc, size_t descsz)
 			break;
 		};
 		break;
+	/* freebsd64_coexecve */
+	case 151:
+		switch(ndx) {
+		case 0:
+			p = "pid_t";
+			break;
+		case 1:
+			p = "userland const char *";
+			break;
+		case 2:
+			p = "userland char **";
+			break;
+		case 3:
+			p = "userland char **";
+			break;
+		default:
+			break;
+		};
+		break;
+	/* freebsd64_coexecvec */
+	case 152:
+		switch(ndx) {
+		case 0:
+			p = "pid_t";
+			break;
+		case 1:
+			p = "userland const char *";
+			break;
+		case 2:
+			p = "userland char **";
+			break;
+		case 3:
+			p = "userland char **";
+			break;
+		case 4:
+			p = "userland char * __capability *";
+			break;
+		case 5:
+			p = "int";
+			break;
+		default:
+			break;
+		};
+		break;
 	/* freebsd64_nlm_syscall */
 	case 154:
 		switch(ndx) {
@@ -4881,6 +5006,51 @@ systrace_entry_setargdesc(int sysnum, int ndx, char *desc, size_t descsz)
 			break;
 		};
 		break;
+	/* freebsd64__cosetup */
+	case 177:
+		switch(ndx) {
+		case 0:
+			p = "int";
+			break;
+		case 1:
+			p = "userland void * __capability *";
+			break;
+		case 2:
+			p = "userland void * __capability *";
+			break;
+		default:
+			break;
+		};
+		break;
+	/* freebsd64_coregister */
+	case 178:
+		switch(ndx) {
+		case 0:
+			p = "userland const char *";
+			break;
+		case 1:
+			p = "userland void * __capability *";
+			break;
+		default:
+			break;
+		};
+		break;
+	/* freebsd64_colookup */
+	case 179:
+		switch(ndx) {
+		case 0:
+			p = "userland const char *";
+			break;
+		case 1:
+			p = "userland void * __capability *";
+			break;
+		default:
+			break;
+		};
+		break;
+	/* copark */
+	case 180:
+		break;
 	/* setgid */
 	case 181:
 		switch(ndx) {
@@ -4932,6 +5102,16 @@ systrace_entry_setargdesc(int sysnum, int ndx, char *desc, size_t descsz)
 			break;
 		case 1:
 			p = "int";
+			break;
+		default:
+			break;
+		};
+		break;
+	/* freebsd64_cogetpid */
+	case 193:
+		switch(ndx) {
+		case 0:
+			p = "userland pid_t *";
 			break;
 		default:
 			break;
@@ -8628,6 +8808,50 @@ systrace_entry_setargdesc(int sysnum, int ndx, char *desc, size_t descsz)
 			break;
 		};
 		break;
+	/* freebsd64_cocall_slow */
+	case 548:
+		switch(ndx) {
+		case 0:
+			p = "userland void * __capability";
+			break;
+		case 1:
+			p = "userland const void * __capability";
+			break;
+		case 2:
+			p = "size_t";
+			break;
+		case 3:
+			p = "userland void * __capability";
+			break;
+		case 4:
+			p = "size_t";
+			break;
+		default:
+			break;
+		};
+		break;
+	/* freebsd64_coaccept_slow */
+	case 549:
+		switch(ndx) {
+		case 0:
+			p = "userland void * __capability *";
+			break;
+		case 1:
+			p = "userland const void * __capability";
+			break;
+		case 2:
+			p = "size_t";
+			break;
+		case 3:
+			p = "userland void * __capability";
+			break;
+		case 4:
+			p = "size_t";
+			break;
+		default:
+			break;
+		};
+		break;
 	/* fdatasync */
 	case 550:
 		switch(ndx) {
@@ -9610,6 +9834,16 @@ systrace_return_setargdesc(int sysnum, int ndx, char *desc, size_t descsz)
 		if (ndx == 0 || ndx == 1)
 			p = "int";
 		break;
+	/* freebsd64_coexecve */
+	case 151:
+		if (ndx == 0 || ndx == 1)
+			p = "int";
+		break;
+	/* freebsd64_coexecvec */
+	case 152:
+		if (ndx == 0 || ndx == 1)
+			p = "int";
+		break;
 	/* freebsd64_nlm_syscall */
 	case 154:
 		if (ndx == 0 || ndx == 1)
@@ -9665,6 +9899,23 @@ systrace_return_setargdesc(int sysnum, int ndx, char *desc, size_t descsz)
 		if (ndx == 0 || ndx == 1)
 			p = "int";
 		break;
+	/* freebsd64__cosetup */
+	case 177:
+		if (ndx == 0 || ndx == 1)
+			p = "int";
+		break;
+	/* freebsd64_coregister */
+	case 178:
+		if (ndx == 0 || ndx == 1)
+			p = "int";
+		break;
+	/* freebsd64_colookup */
+	case 179:
+		if (ndx == 0 || ndx == 1)
+			p = "int";
+		break;
+	/* copark */
+	case 180:
 	/* setgid */
 	case 181:
 		if (ndx == 0 || ndx == 1)
@@ -9687,6 +9938,11 @@ systrace_return_setargdesc(int sysnum, int ndx, char *desc, size_t descsz)
 		break;
 	/* fpathconf */
 	case 192:
+		if (ndx == 0 || ndx == 1)
+			p = "int";
+		break;
+	/* freebsd64_cogetpid */
+	case 193:
 		if (ndx == 0 || ndx == 1)
 			p = "int";
 		break;
@@ -10941,6 +11197,16 @@ systrace_return_setargdesc(int sysnum, int ndx, char *desc, size_t descsz)
 		break;
 	/* freebsd64_utimensat */
 	case 547:
+		if (ndx == 0 || ndx == 1)
+			p = "int";
+		break;
+	/* freebsd64_cocall_slow */
+	case 548:
+		if (ndx == 0 || ndx == 1)
+			p = "int";
+		break;
+	/* freebsd64_coaccept_slow */
+	case 549:
 		if (ndx == 0 || ndx == 1)
 			p = "int";
 		break;

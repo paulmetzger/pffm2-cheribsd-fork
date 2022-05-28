@@ -105,6 +105,8 @@ MIASM =  \
 	freebsd64_adjtime.o \
 	setsid.o \
 	freebsd64_quotactl.o \
+	freebsd64_coexecve.o \
+	freebsd64_coexecvec.o \
 	freebsd64_nlm_syscall.o \
 	freebsd64_nfssvc.o \
 	freebsd64_lgetfh.o \
@@ -116,6 +118,10 @@ MIASM =  \
 	freebsd64_shmsys.o \
 	setfib.o \
 	freebsd64_ntp_adjtime.o \
+	freebsd64__cosetup.o \
+	freebsd64_coregister.o \
+	freebsd64_colookup.o \
+	copark.o \
 	setgid.o \
 	setegid.o \
 	seteuid.o \
@@ -124,6 +130,7 @@ MIASM =  \
 	freebsd11_freebsd64_lstat.o \
 	freebsd64_pathconf.o \
 	fpathconf.o \
+	freebsd64_cogetpid.o \
 	freebsd64_getrlimit.o \
 	freebsd64_setrlimit.o \
 	freebsd11_freebsd64_getdirentries.o \
@@ -393,6 +400,8 @@ MIASM =  \
 	freebsd64_ppoll.o \
 	freebsd64_futimens.o \
 	freebsd64_utimensat.o \
+	freebsd64_cocall_slow.o \
+	freebsd64_coaccept_slow.o \
 	fdatasync.o \
 	freebsd64_fstat.o \
 	freebsd64_fstatat.o \

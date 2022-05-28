@@ -330,6 +330,20 @@ struct freebsd64_quotactl_args {
 	char uid_l_[PADL_(int)]; int uid; char uid_r_[PADR_(int)];
 	char arg_l_[PADL_(void *)]; void * arg; char arg_r_[PADR_(void *)];
 };
+struct freebsd64_coexecve_args {
+	char pid_l_[PADL_(pid_t)]; pid_t pid; char pid_r_[PADR_(pid_t)];
+	char fname_l_[PADL_(const char *)]; const char * fname; char fname_r_[PADR_(const char *)];
+	char argv_l_[PADL_(char **)]; char ** argv; char argv_r_[PADR_(char **)];
+	char envv_l_[PADL_(char **)]; char ** envv; char envv_r_[PADR_(char **)];
+};
+struct freebsd64_coexecvec_args {
+	char pid_l_[PADL_(pid_t)]; pid_t pid; char pid_r_[PADR_(pid_t)];
+	char fname_l_[PADL_(const char *)]; const char * fname; char fname_r_[PADR_(const char *)];
+	char argv_l_[PADL_(char **)]; char ** argv; char argv_r_[PADR_(char **)];
+	char envv_l_[PADL_(char **)]; char ** envv; char envv_r_[PADR_(char **)];
+	char capv_l_[PADL_(char * __capability *)]; char * __capability * capv; char capv_r_[PADR_(char * __capability *)];
+	char capc_l_[PADL_(int)]; int capc; char capc_r_[PADR_(int)];
+};
 struct freebsd64_nlm_syscall_args {
 	char debug_level_l_[PADL_(int)]; int debug_level; char debug_level_r_[PADR_(int)];
 	char grace_period_l_[PADL_(int)]; int grace_period; char grace_period_r_[PADR_(int)];
@@ -381,9 +395,25 @@ struct freebsd64_shmsys_args {
 struct freebsd64_ntp_adjtime_args {
 	char tp_l_[PADL_(struct timex *)]; struct timex * tp; char tp_r_[PADR_(struct timex *)];
 };
+struct freebsd64__cosetup_args {
+	char what_l_[PADL_(int)]; int what; char what_r_[PADR_(int)];
+	char code_l_[PADL_(void * __capability *)]; void * __capability * code; char code_r_[PADR_(void * __capability *)];
+	char data_l_[PADL_(void * __capability *)]; void * __capability * data; char data_r_[PADR_(void * __capability *)];
+};
+struct freebsd64_coregister_args {
+	char name_l_[PADL_(const char *)]; const char * name; char name_r_[PADR_(const char *)];
+	char cap_l_[PADL_(void * __capability *)]; void * __capability * cap; char cap_r_[PADR_(void * __capability *)];
+};
+struct freebsd64_colookup_args {
+	char name_l_[PADL_(const char *)]; const char * name; char name_r_[PADR_(const char *)];
+	char cap_l_[PADL_(void * __capability *)]; void * __capability * cap; char cap_r_[PADR_(void * __capability *)];
+};
 struct freebsd64_pathconf_args {
 	char path_l_[PADL_(const char *)]; const char * path; char path_r_[PADR_(const char *)];
 	char name_l_[PADL_(int)]; int name; char name_r_[PADR_(int)];
+};
+struct freebsd64_cogetpid_args {
+	char pidp_l_[PADL_(pid_t *)]; pid_t * pidp; char pidp_r_[PADR_(pid_t *)];
 };
 struct freebsd64___getrlimit_args {
 	char which_l_[PADL_(u_int)]; u_int which; char which_r_[PADR_(u_int)];
@@ -1358,6 +1388,20 @@ struct freebsd64_utimensat_args {
 	char times_l_[PADL_(const struct timespec *)]; const struct timespec * times; char times_r_[PADR_(const struct timespec *)];
 	char flag_l_[PADL_(int)]; int flag; char flag_r_[PADR_(int)];
 };
+struct freebsd64_cocall_slow_args {
+	char target_l_[PADL_(void * __capability)]; void * __capability target; char target_r_[PADR_(void * __capability)];
+	char outbuf_l_[PADL_(const void * __capability)]; const void * __capability outbuf; char outbuf_r_[PADR_(const void * __capability)];
+	char outlen_l_[PADL_(size_t)]; size_t outlen; char outlen_r_[PADR_(size_t)];
+	char inbuf_l_[PADL_(void * __capability)]; void * __capability inbuf; char inbuf_r_[PADR_(void * __capability)];
+	char inlen_l_[PADL_(size_t)]; size_t inlen; char inlen_r_[PADR_(size_t)];
+};
+struct freebsd64_coaccept_slow_args {
+	char cookiep_l_[PADL_(void * __capability *)]; void * __capability * cookiep; char cookiep_r_[PADR_(void * __capability *)];
+	char outbuf_l_[PADL_(const void * __capability)]; const void * __capability outbuf; char outbuf_r_[PADR_(const void * __capability)];
+	char outlen_l_[PADL_(size_t)]; size_t outlen; char outlen_r_[PADR_(size_t)];
+	char inbuf_l_[PADL_(void * __capability)]; void * __capability inbuf; char inbuf_r_[PADR_(void * __capability)];
+	char inlen_l_[PADL_(size_t)]; size_t inlen; char inlen_r_[PADR_(size_t)];
+};
 struct freebsd64_fstat_args {
 	char fd_l_[PADL_(int)]; int fd; char fd_r_[PADR_(int)];
 	char sb_l_[PADL_(struct stat *)]; struct stat * sb; char sb_r_[PADR_(struct stat *)];
@@ -1573,6 +1617,8 @@ int	freebsd64_rmdir(struct thread *, struct freebsd64_rmdir_args *);
 int	freebsd64_utimes(struct thread *, struct freebsd64_utimes_args *);
 int	freebsd64_adjtime(struct thread *, struct freebsd64_adjtime_args *);
 int	freebsd64_quotactl(struct thread *, struct freebsd64_quotactl_args *);
+int	freebsd64_coexecve(struct thread *, struct freebsd64_coexecve_args *);
+int	freebsd64_coexecvec(struct thread *, struct freebsd64_coexecvec_args *);
 int	freebsd64_nlm_syscall(struct thread *, struct freebsd64_nlm_syscall_args *);
 int	freebsd64_nfssvc(struct thread *, struct freebsd64_nfssvc_args *);
 int	freebsd64_lgetfh(struct thread *, struct freebsd64_lgetfh_args *);
@@ -1583,7 +1629,11 @@ int	freebsd64_semsys(struct thread *, struct freebsd64_semsys_args *);
 int	freebsd64_msgsys(struct thread *, struct freebsd64_msgsys_args *);
 int	freebsd64_shmsys(struct thread *, struct freebsd64_shmsys_args *);
 int	freebsd64_ntp_adjtime(struct thread *, struct freebsd64_ntp_adjtime_args *);
+int	freebsd64__cosetup(struct thread *, struct freebsd64__cosetup_args *);
+int	freebsd64_coregister(struct thread *, struct freebsd64_coregister_args *);
+int	freebsd64_colookup(struct thread *, struct freebsd64_colookup_args *);
 int	freebsd64_pathconf(struct thread *, struct freebsd64_pathconf_args *);
+int	freebsd64_cogetpid(struct thread *, struct freebsd64_cogetpid_args *);
 int	freebsd64_getrlimit(struct thread *, struct freebsd64___getrlimit_args *);
 int	freebsd64_setrlimit(struct thread *, struct freebsd64___setrlimit_args *);
 int	freebsd64___sysctl(struct thread *, struct freebsd64___sysctl_args *);
@@ -1786,6 +1836,8 @@ int	freebsd64_procctl(struct thread *, struct freebsd64_procctl_args *);
 int	freebsd64_ppoll(struct thread *, struct freebsd64_ppoll_args *);
 int	freebsd64_futimens(struct thread *, struct freebsd64_futimens_args *);
 int	freebsd64_utimensat(struct thread *, struct freebsd64_utimensat_args *);
+int	freebsd64_cocall_slow(struct thread *, struct freebsd64_cocall_slow_args *);
+int	freebsd64_coaccept_slow(struct thread *, struct freebsd64_coaccept_slow_args *);
 int	freebsd64_fstat(struct thread *, struct freebsd64_fstat_args *);
 int	freebsd64_fstatat(struct thread *, struct freebsd64_fstatat_args *);
 int	freebsd64_fhstat(struct thread *, struct freebsd64_fhstat_args *);
@@ -2090,6 +2142,8 @@ int	freebsd12_freebsd64_shm_open(struct thread *, struct freebsd12_freebsd64_shm
 #define	FREEBSD64_SYS_AUE_freebsd64_utimes	AUE_UTIMES
 #define	FREEBSD64_SYS_AUE_freebsd64_adjtime	AUE_ADJTIME
 #define	FREEBSD64_SYS_AUE_freebsd64_quotactl	AUE_QUOTACTL
+#define	FREEBSD64_SYS_AUE_freebsd64_coexecve	AUE_NULL
+#define	FREEBSD64_SYS_AUE_freebsd64_coexecvec	AUE_NULL
 #define	FREEBSD64_SYS_AUE_freebsd64_nlm_syscall	AUE_NULL
 #define	FREEBSD64_SYS_AUE_freebsd64_nfssvc	AUE_NFS_SVC
 #define	FREEBSD64_SYS_AUE_freebsd64_lgetfh	AUE_LGETFH
@@ -2102,10 +2156,14 @@ int	freebsd12_freebsd64_shm_open(struct thread *, struct freebsd12_freebsd64_shm
 #define	FREEBSD64_SYS_AUE_freebsd6_freebsd64_pread	AUE_PREAD
 #define	FREEBSD64_SYS_AUE_freebsd6_freebsd64_pwrite	AUE_PWRITE
 #define	FREEBSD64_SYS_AUE_freebsd64_ntp_adjtime	AUE_NTP_ADJTIME
+#define	FREEBSD64_SYS_AUE_freebsd64__cosetup	AUE_NULL
+#define	FREEBSD64_SYS_AUE_freebsd64_coregister	AUE_NULL
+#define	FREEBSD64_SYS_AUE_freebsd64_colookup	AUE_NULL
 #define	FREEBSD64_SYS_AUE_freebsd11_freebsd64_stat	AUE_STAT
 #define	FREEBSD64_SYS_AUE_freebsd11_freebsd64_fstat	AUE_FSTAT
 #define	FREEBSD64_SYS_AUE_freebsd11_freebsd64_lstat	AUE_LSTAT
 #define	FREEBSD64_SYS_AUE_freebsd64_pathconf	AUE_PATHCONF
+#define	FREEBSD64_SYS_AUE_freebsd64_cogetpid	AUE_NULL
 #define	FREEBSD64_SYS_AUE_freebsd64_getrlimit	AUE_GETRLIMIT
 #define	FREEBSD64_SYS_AUE_freebsd64_setrlimit	AUE_SETRLIMIT
 #define	FREEBSD64_SYS_AUE_freebsd11_freebsd64_getdirentries	AUE_GETDIRENTRIES
@@ -2330,6 +2388,8 @@ int	freebsd12_freebsd64_shm_open(struct thread *, struct freebsd12_freebsd64_shm
 #define	FREEBSD64_SYS_AUE_freebsd64_ppoll	AUE_POLL
 #define	FREEBSD64_SYS_AUE_freebsd64_futimens	AUE_FUTIMES
 #define	FREEBSD64_SYS_AUE_freebsd64_utimensat	AUE_FUTIMESAT
+#define	FREEBSD64_SYS_AUE_freebsd64_cocall_slow	AUE_NULL
+#define	FREEBSD64_SYS_AUE_freebsd64_coaccept_slow	AUE_NULL
 #define	FREEBSD64_SYS_AUE_freebsd64_fstat	AUE_FSTAT
 #define	FREEBSD64_SYS_AUE_freebsd64_fstatat	AUE_FSTATAT
 #define	FREEBSD64_SYS_AUE_freebsd64_fhstat	AUE_FHSTAT

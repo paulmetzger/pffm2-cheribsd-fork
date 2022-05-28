@@ -336,3 +336,85 @@ freebsd64_ptrace(struct thread *td, struct freebsd64_ptrace_args *uap)
 
 	return (error);
 }
+
+int
+freebsd64_coexecve(struct thread *td, struct freebsd64_coexecve_args *uap)
+{
+	/*
+	 * We could implement this one.
+	 */
+	return (ENOSYS);
+}
+
+int
+freebsd64_coexecvec(struct thread *td, struct freebsd64_coexecvec_args *uap)
+{
+	/*
+	 * We could implement this one too.
+	 */
+	return (ENOSYS);
+}
+
+/*
+ * XXX: We don't need those at the moment, because we don't support
+ *	colocation for processes which are not purecap.
+ */
+int
+freebsd64__cosetup(struct thread *td, struct freebsd64__cosetup_args *uap)
+{
+#ifdef notyet
+	return (kern_cosetup(td, uap->what, uap->code, uap->data));
+#else
+	return (ENOSYS);
+#endif
+}
+
+int
+freebsd64_coregister(struct thread *td, struct freebsd64_coregister_args *uap)
+{
+#ifdef notyet
+	return (kern_coregister(td, uap->name, uap->cap));
+#else
+	return (ENOSYS);
+#endif
+}
+
+int
+freebsd64_colookup(struct thread *td, struct freebsd64_colookup_args *uap)
+{
+#ifdef notyet
+	return (kern_colookup(td, uap->name, uap->cap));
+#else
+	return (ENOSYS);
+#endif
+}
+
+int
+freebsd64_cogetpid(struct thread *td, struct freebsd64_cogetpid_args *uap)
+{
+#ifdef notyet
+	return (kern_cogetpid(td, uap->pidp));
+#else
+	return (ENOSYS);
+#endif
+}
+
+int
+freebsd64_cocall_slow(struct thread *td, struct freebsd64_cocall_slow_args *uap)
+{
+
+	return (kern_cocall_slow(uap->target,
+	    uap->outbuf, uap->outlen, uap->inbuf, uap->inlen));
+}
+
+int
+freebsd64_coaccept_slow(struct thread *td, struct freebsd64_coaccept_slow_args *uap)
+{
+
+#ifdef notyet
+	return (kern_coaccept_slow(uap->cookiep,
+	    uap->outbuf, uap->outlen, uap->inbuf, uap->inlen));
+#else
+	return (ENOSYS);
+#endif
+}
