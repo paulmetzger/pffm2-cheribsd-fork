@@ -3067,7 +3067,7 @@
 		);
 	}
 548	AUE_NULL	STD {
-		int cocall_slow(
+		ssize_t cocall_slow(
 		    _In_ void * __capability target,
 		    _In_reads_bytes_(outlen) const void * __capability outbuf,
 		    size_t outlen,
@@ -3076,7 +3076,7 @@
 		);
 	}
 549	AUE_NULL	STD {
-		int coaccept_slow(
+		ssize_t coaccept_slow(
 		    _Inout_ void * __capability *cookiep,
 		    _In_reads_bytes_(outlen) const void * __capability outbuf,
 		    size_t outlen,
