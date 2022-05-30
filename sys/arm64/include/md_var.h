@@ -36,12 +36,11 @@
 extern long Maxmem;
 extern char sigcode[];
 extern int szsigcode;
-extern u_long elf_hwcap;
-extern u_long elf_hwcap2;
 #ifdef COMPAT_FREEBSD64
 extern char freebsd64_sigcode[];
 extern int freebsd64_szsigcode;
 #endif
+
 extern	char	switcher_cocall[];
 extern	char	switcher_cocall_copy_start[];
 extern	char	switcher_cocall_copy_end[];
@@ -50,11 +49,18 @@ extern	int	szswitcher_cocall;
 extern	char	switcher_coaccept[];
 extern	int	szswitcher_coaccept;
 
-struct dumperinfo;
+extern u_long elf_hwcap;
+extern u_long elf_hwcap2;
+#ifdef COMPAT_FREEBSD32
+extern u_long elf32_hwcap;
+extern u_long elf32_hwcap2;
+#endif
+extern struct regset regset_arm64_addr_mask;
 
-extern int busdma_swi_pending;
-void busdma_swi(void);
-int minidumpsys(struct dumperinfo *);
+struct dumperinfo;
+struct minidumpstate;
+
+int cpu_minidumpsys(struct dumperinfo *, const struct minidumpstate *);
 void generic_bs_fault(void) __asm(__STRING(generic_bs_fault));
 void generic_bs_peek_1(void) __asm(__STRING(generic_bs_peek_1));
 void generic_bs_peek_2(void) __asm(__STRING(generic_bs_peek_2));
